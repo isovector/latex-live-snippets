@@ -21,9 +21,10 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-
-library:
-  source-dirs: src
+- directory
+- MissingH
+- filepath
+- lens
 
 executables:
   latex-live-snippets-exe:
@@ -33,16 +34,3 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    dependencies:
-    - latex-live-snippets
-
-tests:
-  latex-live-snippets-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - latex-live-snippets
