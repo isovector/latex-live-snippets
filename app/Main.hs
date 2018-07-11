@@ -13,7 +13,7 @@ main :: IO ()
 main = do
   let dir = ".latex-live-snippets"
 
-  [filename, decl] <- pure ["app/Main.hs", "matchDefinition"]
+  [filename, decl] <- getArgs
   file <- readFile filename
   createDirectoryIfMissing True dir
   let filename' = dir </> filename ^. basename ++ "." ++ decl ++ ".tex"

@@ -1,9 +1,12 @@
 # latex-live-snippets
 
-Install via:
+Install with `stack install`, and then in latex via:
 
 ```latex
-\newcommand{\snip}[2]{\immediate\write18{latex-live-snippets #1 #2}\input{.latex-live-snippets/#1#2.tex}}
+% set this to where your code is
+\newcommand{\srcdir}{.}
+
+\newcommand{\snip}[2]{\immediate\write18{latex-live-snippets \srcdir/#1.hs #2}\input{.latex-live-snippets/#1.#2.tex}}
 ```
 
 Now, given a file `Test.hs`:

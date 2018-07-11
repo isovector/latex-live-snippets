@@ -1,10 +1,10 @@
 name:                latex-live-snippets
 version:             0.1.0.0
-github:              "githubuser/latex-live-snippets"
+github:              "isovector/latex-live-snippets"
 license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+author:              "Sandy Maguire"
+maintainer:          "sandy@sandymaguire.me"
+copyright:           "2018 Sandy Maguire"
 
 extra-source-files:
 - README.md
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/latex-live-snippets#readme>
+description:         Please see the README on GitHub at <https://github.com/isovector/latex-live-snippets#readme>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -27,7 +27,7 @@ dependencies:
 - lens
 
 executables:
-  latex-live-snippets-exe:
+  latex-live-snippets:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
