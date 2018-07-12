@@ -1,12 +1,14 @@
 module Main where
 
-import System.Environment
-import System.Directory
-import System.FilePath.Posix
-import System.FilePath.Lens (basename)
 import Control.Lens ((^.))
+import Control.Monad (guard)
 import Data.List
 import Data.List.Utils (replace)
+import Data.Maybe (listToMaybe, isNothing, fromJust)
+import System.Directory
+import System.Environment
+import System.FilePath.Lens (basename)
+import System.FilePath.Posix
 
 
 main :: IO ()
@@ -20,18 +22,19 @@ main = do
   writeFile filename' $ getDefinition file decl
 
 
-matchDefinition :: String -> String -> Bool
+matchDefinition :: String -> String -> Maybe ([String] -> [String])
 matchDefinition decl line =
-  or $ do
-    form <- [ ""
-            , "-- # "
-            , "type family "
-            , "data family "
-            , "data "
-            , "type "
-            , "newtype "
-            ]
-    pure $ isPrefixOf (form ++ decl) line
+  listToMaybe $ do
+    (form, f) <- [ ("", id)
+                 , ("-- # ", tail)
+                 , ("type family ", id)
+                 , ("data family ", id)
+                 , ("data ", id)
+                 , ("type ", id)
+                 , ("newtype ", id)
+                 ]
+    guard $ isPrefixOf (form ++ decl) line
+    pure f
 
 
 getDefinition :: String -> String -> String
@@ -46,10 +49,13 @@ getDefinition file decl
     . fmap (replace "#" "\\#")
     . fmap (replace "~" "\\tyeq")
     . fmap (replace "\\" "\\textbackslash")
-    . takeWhile (not . null)
-    $ dropWhile (not . matchDefinition decl) ls
+    . func
+    $ ls
   where
-    ls = lines file
+    ls = takeWhile (not . null)
+       . dropWhile (isNothing . matchDefinition decl)
+       $ lines file
+    func = fromJust . matchDefinition decl $ head ls
 
 
 annotate :: String -> String
