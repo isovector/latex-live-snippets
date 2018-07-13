@@ -32,6 +32,7 @@ matchDefinition decl line =
                  , ("data ", id)
                  , ("type ", id)
                  , ("newtype ", id)
+                 , ("class ", id)
                  ]
     guard $ isPrefixOf (form ++ decl) line
     pure f
