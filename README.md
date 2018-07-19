@@ -32,7 +32,7 @@ which will result in:
 \begin{code}
 test :: Bool -> Bool
 test True = id \$ True
-test \_    = True \ann{1}
+test \_    = True \annotate{1}
 \end{code}
 ```
 

@@ -61,6 +61,6 @@ getDefinition file decl
 
 annotate :: String -> String
 annotate [] = ""
-annotate ('-':'-':' ':'!':' ':zs) = "\\ann{" ++ zs ++ "}"
+annotate ('-':'-':' ':'!':' ':zs) = "\\annotate{" ++ zs ++ "}"
 annotate (a:as) = a : annotate as
 
