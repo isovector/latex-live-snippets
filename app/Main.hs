@@ -49,7 +49,7 @@ getDefinition file decl
     . fmap (replace "}" "\\}")
     . fmap (replace "#" "\\#")
     . fmap (replace "~" "\\tyeq")
-    . fmap (replace "\\" "\\textbackslash")
+    . fmap (replace "\\" "\\textbackslash\\!\\! ")
     . func
     $ ls
   where
