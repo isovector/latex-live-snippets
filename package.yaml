@@ -30,3 +30,10 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+  latex-live-snippets-ghci:
+    main:                Main.hs
+    source-dirs:         app-ghci
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N

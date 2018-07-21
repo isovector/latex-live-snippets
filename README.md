@@ -39,3 +39,61 @@ test \_    = True \annotate{1}
 It will also find type families, data definitions. Custom snippet areas can be
 defined via comments  of the form `-- # name`.
 
+
+# latex-live-snippets-ghci
+
+Put the following on your path as `latex-live-snippets-run-ghci`
+
+```bash
+#!/usr/bin/bash
+
+response=$(mktemp /tmp/ghci-latex.XXXXXXXXXXX)
+
+echo ":l $1" | cat - $2 | stack exec ghci > $response
+latex-live-snippets-ghci $2 $response $3
+```
+
+and install in latex via
+
+```latex
+\usepackage{fancyvrb}
+
+\newcommand*\ifcounter[1]{%
+  \ifcsname c@#1\endcsname
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+
+\newcommand{\doreplparam}{}
+\newcommand{\doreplfile}{}
+\newenvironment{dorepl}[1]{\VerbatimEnvironment
+\renewcommand{\doreplparam}{#1}
+\renewcommand{\doreplfile}{\doreplparam-\arabic{\doreplparam}}
+\ifcounter{\doreplparam}{}{\newcounter{\doreplparam}}
+\begin{VerbatimOut}{/tmp/\doreplfile.aux}}{\end{VerbatimOut}
+\immediate\write18{latex-live-snippets-run-ghci \srcdir/\doreplparam.hs /tmp/\doreplfile.aux \doreplfile}
+\input{.latex-live-snippets/repl/\doreplfile.tex}
+\stepcounter{\doreplparam}
+}
+```
+
+Now you can run repl sessions:
+
+```latex
+\begin{dorepl}{Test}
+:t zoo
+take 3 $ iterate not False
+\end{dorepl}
+```
+
+results in
+
+```latex
+\begin{repl}
+\ghci{:t zoo}{zoo :: Int}
+\ghci{take 3 $ iterate not False}{[False,True,False]]}
+\end{repl}
+```
+
