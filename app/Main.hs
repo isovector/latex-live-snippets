@@ -1,5 +1,6 @@
 module Main where
 
+import Common (escapeLatexChars)
 import Control.Lens ((^.))
 import Control.Monad (guard)
 import Data.List
@@ -44,12 +45,7 @@ getDefinition file decl
     . ("\\begin{code}" :)
     . (++ ["\\end{code}"])
     . fmap annotate
-    . fmap (replace "$" "\\$")
-    . fmap (replace "{" "\\{")
-    . fmap (replace "}" "\\}")
-    . fmap (replace "#" "\\#")
-    . fmap (replace "~" "\\tyeq")
-    . fmap (replace "\\" "\\textbackslash\\!\\! ")
+    . fmap escapeLatexChars
     . func
     $ ls
   where

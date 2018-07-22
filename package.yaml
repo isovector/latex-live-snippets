@@ -22,6 +22,9 @@ dependencies:
 - filepath
 - lens
 
+library:
+  source-dirs:           lib
+
 executables:
   latex-live-snippets:
     main:                Main.hs
@@ -30,6 +33,8 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    dependencies:
+    - latex-live-snippets
   latex-live-snippets-ghci:
     main:                Main.hs
     source-dirs:         app-ghci
@@ -37,3 +42,5 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    dependencies:
+    - latex-live-snippets

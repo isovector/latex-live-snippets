@@ -58,6 +58,7 @@ and install in latex via
 ```latex
 \usepackage{fancyvrb}
 
+\makeatletter
 \newcommand*\ifcounter[1]{%
   \ifcsname c@#1\endcsname
     \expandafter\@firstoftwo
@@ -65,6 +66,7 @@ and install in latex via
     \expandafter\@secondoftwo
   \fi
 }
+\makeatother
 
 \newcommand{\doreplparam}{}
 \newcommand{\doreplfile}{}
@@ -93,7 +95,7 @@ results in
 ```latex
 \begin{repl}
 \ghci{:t zoo}{zoo :: Int}
-\ghci{take 3 $ iterate not False}{[False,True,False]]}
+\ghci{take 3 \$ iterate not False}{[False,True,False]]}
 \end{repl}
 ```
 

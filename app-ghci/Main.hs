@@ -1,5 +1,6 @@
 module Main where
 
+import Common (escapeLatexChars)
 import Data.Char (isSpace)
 import Control.Lens ((^.), _head, (%~))
 import Control.Monad (guard, join)
@@ -29,9 +30,14 @@ main = do
 interleave :: [String] -> [String] -> String
 interleave as
   = ("\\begin{repl}\n" ++)
-  . (++ "\n\\end{repl}")
+  . (++ "\n\\end{repl}\n")
   . intercalate "\n\n"
-  . zipWith (\a b -> mconcat ["\\ghci{", a, "}{", init b, "}"])
+  . zipWith (\a b -> mconcat [ "\\ghci{"
+                             , escapeLatexChars a
+                             , "}{"
+                             , escapeLatexChars $ init b
+                             , "}"
+                             ])
             (fmap (dropWhile isSpace) as)
 
 
