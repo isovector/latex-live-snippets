@@ -32,13 +32,30 @@ interleave as
   = ("\\begin{repl}\n" ++)
   . (++ "\n\\end{repl}\n")
   . intercalate "\n\n"
-  . zipWith (\a b -> mconcat [ "\\ghci{"
+  . zipping isSilent
+            (\a -> mconcat [ "\\ghcisilent{"
+                           , escapeLatexChars a
+                           , "}"
+                           ])
+            (\a b -> mconcat [ "\\ghci{"
                              , escapeLatexChars a
                              , "}{"
-                             , escapeLatexChars $ init b
+                             , escapeLatexChars $ initNonEmpty b
                              , "}"
                              ])
             (fmap (dropWhile isSpace) as)
+
+
+zipping :: (a -> Bool) -> (a -> c) -> (a -> b -> c) -> [a] -> [b] -> [c]
+zipping _ _ _ [] _ = []
+zipping _ _ _ _ [] = []
+zipping p d f (a:as) bs | p a = d a   : zipping p d f as bs
+zipping p d f (a:as) (b:bs)   = f a b : zipping p d f as bs
+
+
+initNonEmpty :: [a] -> [a]
+initNonEmpty [] = []
+initNonEmpty a = init a
 
 
 responses :: String -> [String]
@@ -60,6 +77,13 @@ isResponse ('*':_) = True
 isResponse _ = False
 
 
+isSilent :: String -> Bool
+isSilent str
+  | isPrefixOf ":set " str = True
+  | isPrefixOf "let " str = True
+  | otherwise = False
+
+
 
 test :: String
 test = unlines
@@ -76,7 +100,7 @@ test = unlines
 
 sample :: String
 sample = unlines
-  [ ":load code/RankN.hs"
+  [ ":set -XDataKinds"
   , ":kind! Functor"
   , ":kind! Monad"
   ]

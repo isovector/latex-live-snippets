@@ -85,6 +85,7 @@ Now you can run repl sessions:
 
 ```latex
 \begin{dorepl}{Test}
+:set -XDataKinds
 :t zoo
 take 3 $ iterate not False
 \end{dorepl}
@@ -94,6 +95,7 @@ results in
 
 ```latex
 \begin{repl}
+\ghcisilent{:set -XDataKinds}
 \ghci{:t zoo}{zoo :: Int}
 \ghci{take 3 \$ iterate not False}{[False,True,False]]}
 \end{repl}
