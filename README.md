@@ -31,8 +31,8 @@ which will result in:
 ```latex
 \begin{code}
 test :: Bool -> Bool
-test True = id \$ True
-test \_    = True \annotate{1}
+test True = id $ True
+test _    = True |\annotate{1}|
 \end{code}
 ```
 
@@ -97,7 +97,7 @@ results in
 \begin{repl}
 \ghcisilent{:set -XDataKinds}
 \ghci{:t zoo}{zoo :: Int}
-\ghci{take 3 \$ iterate not False}{[False,True,False]]}
+\ghci{take 3 $ iterate not False}{[False,True,False]]}
 \end{repl}
 ```
 

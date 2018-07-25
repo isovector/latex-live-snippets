@@ -1,5 +1,6 @@
 module Main where
 
+import Data.Bool (bool)
 import Common (escapeLatexChars)
 import Data.Char (isSpace)
 import Control.Lens ((^.), _head, (%~))
@@ -61,7 +62,7 @@ initNonEmpty a = init a
 responses :: String -> [String]
 responses
   = fmap unlines
-  . fmap (_head %~ removeTag)
+  . fmap (_head %~ removeManyTags)
   . groupBy (\_ a -> not $ isResponse a)
   . tail
   . dropWhile (not . isPrefixOf "Ok, modules loaded")
@@ -72,6 +73,10 @@ removeTag :: String -> String
 removeTag = drop 2 . dropWhile (/= '>')
 
 
+removeManyTags :: String -> String
+removeManyTags ts = bool ts (removeManyTags $ removeTag ts) $ isResponse ts
+
+
 isResponse :: String -> Bool
 isResponse ('*':_) = True
 isResponse _ = False
@@ -79,8 +84,9 @@ isResponse _ = False
 
 isSilent :: String -> Bool
 isSilent str
-  | isPrefixOf ":set " str = True
-  | isPrefixOf "let " str = True
+  | isPrefixOf ":set " str     = True
+  | isPrefixOf "let " str      = True
+  | isPrefixOf "default (" str = True
   | otherwise = False
 
 
