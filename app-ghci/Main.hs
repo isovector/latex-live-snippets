@@ -86,6 +86,7 @@ isSilent :: String -> Bool
 isSilent str
   | isPrefixOf ":set " str     = True
   | isPrefixOf "let " str      = True
+  | isPrefixOf "import " str   = True
   | isPrefixOf "default (" str = True
   | otherwise = False
 

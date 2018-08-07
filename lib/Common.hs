@@ -3,5 +3,5 @@ module Common where
 import Data.List.Utils (replace)
 
 escapeLatexChars :: String -> String
-escapeLatexChars = id
+escapeLatexChars = replace "~" "!\\tyeq!"
 
