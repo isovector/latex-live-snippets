@@ -64,8 +64,8 @@ responses
   = fmap unlines
   . fmap (_head %~ removeManyTags)
   . groupBy (\_ a -> not $ isResponse a)
-  . tail
-  . dropWhile (not . isPrefixOf "Ok, modules loaded")
+  . drop 1
+  . dropWhile (not . isPrefixOf "Ok, ")
   . lines
 
 
