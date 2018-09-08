@@ -7,9 +7,11 @@ escapeLatexChars =
   replace "~" "!\\tyeq!"
 
 
-escapeMoreLatexChars :: String -> String
-escapeMoreLatexChars
+escapeGHCILatexChars :: String -> String
+escapeGHCILatexChars
   = escapeLatexChars
-  . replace "{" "\\{"
-  . replace "}" "\\}"
+  . replace "!!!!!!!!!!" "\\"
+  . replace "\\" "!!!!!!!!!!textbackslash{}"
+  . replace "{" "!!!!!!!!!!{"
+  . replace "}" "!!!!!!!!!!}"
 

@@ -1,7 +1,7 @@
 module Main where
 
 import Data.Bool (bool)
-import Common (escapeMoreLatexChars)
+import Common (escapeGHCILatexChars)
 import Data.Char (isSpace)
 import Control.Lens ((^.), _head, (%~))
 import Control.Monad (guard, join)
@@ -32,17 +32,17 @@ interleave :: [String] -> [String] -> String
 interleave as
   = ("\\begin{repl}\n" ++)
   . (++ "\n\\end{repl}\n")
-  . intercalate "\n\n"
+  . intercalate "\n"
   . zipping isSilent
             (\a -> mconcat [ "\\ghcisilent{"
-                           , escapeMoreLatexChars a
+                           , escapeGHCILatexChars a
                            , "}"
                            ])
             (\a b -> mconcat [ "\\ghci{"
-                             , escapeMoreLatexChars a
+                             , escapeGHCILatexChars a
                              , "}{"
-                             , escapeMoreLatexChars $ initNonEmpty b
-                             , "}"
+                             , escapeGHCILatexChars $ initNonEmpty b
+                             , "}\n"
                              ])
             (fmap (dropWhile isSpace) as)
 
