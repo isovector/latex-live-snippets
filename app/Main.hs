@@ -5,7 +5,7 @@ import Control.Lens ((^.))
 import Control.Monad (guard)
 import Data.List
 import Data.List.Utils (replace)
-import Data.Maybe (listToMaybe, isNothing, fromJust)
+import Data.Maybe (listToMaybe, isNothing, fromJust, fromMaybe)
 import System.Directory
 import System.Environment
 import System.FilePath.Lens (basename)
@@ -16,10 +16,11 @@ main :: IO ()
 main = do
   let dir = ".latex-live-snippets"
 
-  [filename, decl] <- getArgs
+  filename <- head <$> getArgs
+  decl <- listToMaybe . tail <$> getArgs
   file <- readFile filename
   createDirectoryIfMissing True dir
-  let filename' = dir </> filename ^. basename ++ "." ++ decl ++ ".tex"
+  let filename' = dir </> filename ^. basename ++ "." ++ fromMaybe "FILE" decl ++ ".tex"
   writeFile filename' $ getDefinition file decl
 
 
@@ -39,8 +40,8 @@ matchDefinition decl line =
     pure f
 
 
-getDefinition :: String -> String -> String
-getDefinition file decl
+getDefinition :: String -> Maybe String -> String
+getDefinition file (Just decl)
     = unlines
     . ("\\begin{code}" :)
     . (++ ["\\end{code}"])
@@ -53,6 +54,14 @@ getDefinition file decl
        . dropWhile (isNothing . matchDefinition decl)
        $ lines file
     func = fromJust . matchDefinition decl $ head ls
+getDefinition file Nothing
+    = unlines
+    . ("\\begin{code}" :)
+    . (++ ["\\end{code}"])
+    . fmap annotate
+    . fmap escapeLatexChars
+    $ lines file
+
 
 
 annotate :: String -> String
