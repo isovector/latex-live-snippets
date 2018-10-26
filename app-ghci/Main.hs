@@ -34,7 +34,10 @@ interleave as
   . (++ "\n\\end{repl}\n")
   . intercalate "\n"
   . zipping isSilent
-            (\a -> mconcat [ "\\ghcisilent{"
+            (\a ->
+                if isReallySilent a
+                   then ""
+                   else mconcat [ "\\ghcisilent{"
                            , escapeGHCILatexChars a
                            , "}"
                            ])
@@ -86,13 +89,19 @@ isResponse _ = False
 
 isSilent :: String -> Bool
 isSilent str
-  | isPrefixOf ":set " str     = True
-  | isPrefixOf "let " str      = True
-  | isPrefixOf "type " str     = True
-  | isPrefixOf "import " str   = True
+  | isPrefixOf ":set "     str = True
+  | isPrefixOf "let "      str = True
+  | isPrefixOf "type "     str = True
+  | isPrefixOf "import "   str = True
   | isPrefixOf "default (" str = True
+  | isPrefixOf "@"         str = True
   | otherwise = False
 
+
+isReallySilent :: String -> Bool
+isReallySilent str
+  | isPrefixOf "@" str = True
+  | otherwise = False
 
 
 test :: String
