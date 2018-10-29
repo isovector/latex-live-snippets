@@ -1,3 +1,5 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Main where
 
 import Data.Bool (bool)
@@ -42,7 +44,7 @@ interleave as
                            , "}"
                            ])
             (\a b -> mconcat [ "\\ghci{"
-                             , escapeGHCILatexChars a
+                             , escapeGHCILatexChars $ runSub a
                              , "}{"
                              , escapeGHCILatexChars $ initNonEmpty b
                              , "}\n"
@@ -102,6 +104,14 @@ isReallySilent :: String -> Bool
 isReallySilent str
   | isPrefixOf "@" str = True
   | otherwise = False
+
+
+runSub :: String -> String
+runSub ('/' : line) =
+  let (rep,  tail -> line') = span (/= '/') line
+      (with, tail -> str')  = span (/= '/') line'
+   in replace rep with str'
+runSub str = str
 
 
 test :: String
