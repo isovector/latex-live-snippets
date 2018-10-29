@@ -1,3 +1,5 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Common where
 
 import Data.List.Utils (replace)
@@ -15,4 +17,16 @@ escapeGHCILatexChars
   . replace "{" "!!!!!!!!!!{"
   . replace "}" "!!!!!!!!!!}"
   . replace "*" "Type"
+
+
+runSub :: Maybe (String -> String) -> String -> String
+runSub Nothing = id
+runSub (Just f) = f
+
+getSub :: String -> (String, Maybe (String -> String))
+getSub ('/' : line) =
+  let (rep,  tail -> line') = span (/= '/') line
+      (with, tail -> str')  = span (/= '/') line'
+   in (str', Just $ replace rep with)
+getSub str = (str, Nothing)
 

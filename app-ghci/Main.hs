@@ -1,12 +1,10 @@
-{-# LANGUAGE ViewPatterns #-}
-
 module Main where
 
-import Data.Bool (bool)
-import Common (escapeGHCILatexChars)
-import Data.Char (isSpace)
+import Common (escapeGHCILatexChars, getSub, runSub)
 import Control.Lens ((^.), _head, (%~))
 import Control.Monad (guard, join)
+import Data.Bool (bool)
+import Data.Char (isSpace)
 import Data.List
 import Data.List.Utils (replace)
 import Data.Maybe (listToMaybe, isNothing, fromJust)
@@ -35,21 +33,22 @@ interleave as
   = ("\\begin{repl}\n" ++)
   . (++ "\n\\end{repl}\n")
   . intercalate "\n"
-  . zipping isSilent
-            (\a ->
-                if isReallySilent a
+  . zipping (isSilent . fst)
+            (\(a, f) ->
+                let a' = runSub f a in
+                if isReallySilent a'
                    then ""
                    else mconcat [ "\\ghcisilent{"
-                           , escapeGHCILatexChars a
+                           , escapeGHCILatexChars a'
                            , "}"
                            ])
-            (\a b -> mconcat [ "\\ghci{"
-                             , escapeGHCILatexChars $ runSub a
+            (\(a, f) b -> mconcat [ "\\ghci{"
+                             , escapeGHCILatexChars $ runSub f a
                              , "}{"
-                             , escapeGHCILatexChars $ initNonEmpty b
+                             , escapeGHCILatexChars . runSub f $ initNonEmpty b
                              , "}\n"
                              ])
-            (fmap (dropWhile isSpace) as)
+            (fmap (getSub . dropWhile isSpace) as)
 
 
 zipping :: (a -> Bool) -> (a -> c) -> (a -> b -> c) -> [a] -> [b] -> [c]
@@ -104,14 +103,6 @@ isReallySilent :: String -> Bool
 isReallySilent str
   | isPrefixOf "@" str = True
   | otherwise = False
-
-
-runSub :: String -> String
-runSub ('/' : line) =
-  let (rep,  tail -> line') = span (/= '/') line
-      (with, tail -> str')  = span (/= '/') line'
-   in replace rep with str'
-runSub str = str
 
 
 test :: String
