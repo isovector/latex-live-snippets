@@ -30,23 +30,22 @@ main = do
 
 interleave :: [String] -> [String] -> String
 interleave as
-  = ("\\begin{repl}\n" ++)
-  . (++ "\n\\end{repl}\n")
-  . intercalate "\n"
+  = ("\\begin{repl}\\begin{lstlisting}\n" ++)
+  . (++ "\\end{lstlisting}\\end{repl}\n")
+  . intercalate "\n\n"
+  . filter (not . null)
   . zipping (isSilent . fst)
             (\(a, f) ->
                 let a' = runSub f a in
                 if isReallySilent a'
                    then ""
-                   else mconcat [ "\\ghcisilent{"
+                   else mconcat [ "> "
                            , escapeGHCILatexChars a'
-                           , "}"
                            ])
-            (\(a, f) b -> mconcat [ "\\ghci{"
+            (\(a, f) b -> mconcat [ "> "
                              , escapeGHCILatexChars $ runSub f a
-                             , "}{"
+                             , "\n"
                              , escapeGHCILatexChars . runSub f $ initNonEmpty b
-                             , "}\n"
                              ])
             (fmap (getSub . dropWhile isSpace) as)
 

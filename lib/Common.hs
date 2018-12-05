@@ -11,12 +11,13 @@ escapeLatexChars
 
 escapeGHCILatexChars :: String -> String
 escapeGHCILatexChars
-  = escapeLatexChars
-  . replace "!!!!!!!!!!" "\\"
-  . replace "\\" "!!!!!!!!!!textbackslash{}"
-  . replace "{" "!!!!!!!!!!{"
-  . replace "}" "!!!!!!!!!!}"
-  . replace "*" "Type"
+  = id
+
+    -- escapeLatexChars
+  -- . replace "!!!!!!!!!!" "\\"
+  -- . replace "\\" "!!!!!!!!!!textbackslash{}"
+  -- . replace "{" "!!!!!!!!!!{"
+  -- . replace "}" "!!!!!!!!!!}"
 
 
 runSub :: Maybe (String -> String) -> String -> String
